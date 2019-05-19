@@ -21,6 +21,7 @@ public class UserBusinessService {
   @Autowired
   private PasswordCryptographyProvider cryptographyProvider;
 
+  //User controller will use this method and validate the user sign up process
   @Transactional(propagation = Propagation.REQUIRED)
   public UserEntity signup(UserEntity userEntity) throws SignUpRestrictedException {
     UserEntity entity = userDao.getUserByUsername(userEntity.getUsername());
@@ -37,6 +38,7 @@ public class UserBusinessService {
     return userDao.createUser(userEntity);
   }
 
+  //User controller will use this method authenticate after the user sign up
   @Transactional(propagation = Propagation.REQUIRED)
   public UserAuthTokenEntity authenticate(final String username, final String password) throws AuthenticationFailedException {
 
@@ -68,6 +70,7 @@ public class UserBusinessService {
     }
   }
 
+  //User controller will make use of the sign out after validation with the access token
   @Transactional(propagation = Propagation.REQUIRED)
   public UserAuthTokenEntity signout(String accessToken) throws SignOutRestrictedException {
 
@@ -84,6 +87,7 @@ public class UserBusinessService {
     return userAuthTokenEntity;
   }
 
+  //This method will return the controller or any service class the user with request of user id
   public UserEntity getUser(String userId, String accessToken) throws AuthorizationFailedException, UserNotFoundException {
 
      UserAuthTokenEntity userAuthToken = userDao.getUserByAccessToken(accessToken);

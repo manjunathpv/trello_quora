@@ -26,10 +26,14 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/")
 public class UserController {
-
+  //to enable access to methods defined in respective Business services
   @Autowired
   private UserBusinessService userBusinessService;
 
+  /**
+   * @param  signupUserRequest the first {@code SignupUserRequest} to signup a particular user with details.
+   * @return ResponseEntity is returned with Status CREATED.
+   */
   @RequestMapping(method = RequestMethod.POST, path = "/user/signup", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<SignupUserResponse> signup(final SignupUserRequest signupUserRequest) throws SignUpRestrictedException {
 
@@ -52,7 +56,10 @@ public class UserController {
 
     return new ResponseEntity<SignupUserResponse>(userResponse, HttpStatus.CREATED);
   }
-
+/**
+   * @param  authorization the first {@code String} to signin a particular user and check access.
+   * @return ResponseEntity is returned with Status OK.
+   */
   @RequestMapping(method = RequestMethod.POST, path = "/user/signin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<SigninResponse> signin(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
     byte[] decode = Base64.getDecoder().decode(authorization);
@@ -70,8 +77,12 @@ public class UserController {
     return new ResponseEntity<SigninResponse>(authorizedUserResponse, headers, HttpStatus.OK);
   }
 
+  /**
+   * @param  accessToken the first {@code String} to signout a particular user.
+   * @return ResponseEntity is returned with Status OK.
+   */
   @RequestMapping(method = RequestMethod.POST, path = "/user/signout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SignoutResponse> signout(@RequestHeader("access-token") final String accessToken) throws SignOutRestrictedException {
+  public ResponseEntity<SignoutResponse> signout(@RequestHeader("authorization") final String accessToken) throws SignOutRestrictedException {
     UserAuthTokenEntity userAuthTokenEntity = userBusinessService.signout(accessToken);
 
     SignoutResponse signedOutSuccessfully = new SignoutResponse().id(userAuthTokenEntity.getUuid()).message("SIGNED OUT SUCCESSFULLY");
