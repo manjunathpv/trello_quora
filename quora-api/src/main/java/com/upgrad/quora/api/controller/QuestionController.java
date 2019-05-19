@@ -35,17 +35,13 @@ public class QuestionController {
     UserAdminBusinessService userAdminBusinessService;
 
     @Autowired
-    EditQuestionContentBusinessService editQuestionContentBusinessService;
+    EditQuestionBusinessService editQuestionContentBusinessService;
 
     @Autowired
     DeleteQuestionBusinessService deleteQuestionBusinessService;
 
 
-    /**
-     * @param  questionRequest the first {@code QuestionRequest} to create a particular question.
-     * @param  authorization the second {@code String} to check if the access is available.
-     * @return ResponseEntity is returned with Status CREATED.
-     */
+    // Signed in users can create questions with access token
     @RequestMapping(method = RequestMethod.POST, path = "/question/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<QuestionResponse> createQuestion(final QuestionRequest questionRequest, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException {
         // Logic to handle Bearer <accesstoken>
@@ -68,10 +64,7 @@ public class QuestionController {
         return new ResponseEntity<QuestionResponse>(questionResponse, HttpStatus.CREATED);
     }
 
-    /**
-     * @param  authorization the first {@code String} to check if the access is available.
-     * @return ResponseEntity is returned with Status OK.
-     */
+    //Signed in users can get all the questions
     @RequestMapping(method = RequestMethod.GET, path = "/question/all", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<QuestionDetailsResponse>> getAllQuestions(@RequestHeader("authorization") final String authorization) throws AuthorizationFailedException {
         // Logic to handle Bearer <accesstoken>
@@ -99,11 +92,7 @@ public class QuestionController {
         return new ResponseEntity<List<QuestionDetailsResponse>>(allQuestionDetailsResponses, HttpStatus.OK);
     }
 
-    /**
-     * @param  userId the first {@code String} to get all question by particular user.
-     * @param  authorization the second {@code String} to check if the access is available.
-     * @return ResponseEntity is returned with Status FOUND.
-     */
+    //Signed in users can get all the questions with the questions mapped with a particular question ID
     @RequestMapping(method = RequestMethod.GET, path ="/question/all/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<QuestionDetailsResponse>> getAllQuestionsByUser(@PathVariable("userId") final String userId, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, UserNotFoundException {
         // Logic to handle Bearer <accesstoken>
@@ -131,12 +120,7 @@ public class QuestionController {
         return new ResponseEntity<List<QuestionDetailsResponse>>(allQuestionDetailsResponse, HttpStatus.FOUND);
     }
 
-    /**
-     * @param  questionEditRequest the first {@code QuestionEditRequest} content to edit a particular question
-     * @param  questionId the second {@code String} to edit a particular question
-     * @param  authorization the third {@code String} to check if the access is available.
-     * @return ResponseEntity is returned with Status OK.
-     */
+    //Signed user can edit the question with a valid question id
     @RequestMapping(method = RequestMethod.PUT, path = "/question/edit/{questionId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<QuestionEditResponse> editQuestionContent(final QuestionEditRequest questionEditRequest, @PathVariable("questionId") final String questionId, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
         // Logic to handle Bearer <accesstoken>
@@ -159,11 +143,7 @@ public class QuestionController {
         return new ResponseEntity<QuestionEditResponse>(questionEditResponse, HttpStatus.OK);
     }
 
-    /**
-     * @param  questionId the first {@code String} to delete a particular question.
-     * @param  authorization the second {@code String} to check if the access is available.
-     * @return ResponseEntity is returned with Status OK.
-     */
+    //Only the question owners can delete their questions with a valid and mapped question ID
     @RequestMapping(method = RequestMethod.DELETE, path = "/question/delete/{questionId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<QuestionDeleteResponse> deleteQuestion(@PathVariable("questionId") final String questionId, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
 
