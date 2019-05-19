@@ -22,26 +22,21 @@ public class GetAllQuestionsByUserBusinessService {
     @Autowired
     private QuestionDao questionDao;
 
-    /**
-     * @param  userId the first {@code String} to get all questions related to the user.
-     * @param  authorizationToken the second {@code String} to check if the access is available.
-     * @return List of QuestionEntity objects.
-     */
     @Transactional(propagation = Propagation.REQUIRED)
     public List<QuestionEntity> getAllQuestionsByUser(final String userId, final String authorizationToken) throws AuthorizationFailedException, UserNotFoundException {
         UserAuthTokenEntity userAuthEntity = userDao.getUserByAccessToken(authorizationToken);
 
-        // Validate if user is signed in or not
+        // Validate if user is signed in or not checked with Access token
         if (userAuthEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
         }
 
-        // Validate if user has signed out
+        // Validate if user has signed out with the Access Token
         if (userAuthEntity.getLogoutAt() != null) {
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get all questions posted by a specific user");
         }
 
-        // Validate if requested user exist or not
+        // Validate if requested user exist or not using the UUID
         if (userDao.getUserByUuid(userId) == null) {
             throw new UserNotFoundException("USR-001", "User with entered uuid whose question details are to be seen does not exist");
         }
