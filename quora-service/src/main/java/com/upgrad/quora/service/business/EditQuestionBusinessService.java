@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class EditQuestionContentBusinessService {
+public class EditQuestionBusinessService {
 
     @Autowired
     private UserDao userDao;

@@ -1,9 +1,7 @@
 package com.upgrad.quora.service.common;
 
-/**
- * @author Manish Rout (https://github.com/mnshrt)
- * Description - Interface for constant used for identifying checkpoints
- */
+
+// some of the warning and errors returned by the business service class
 public interface EndPoint {
     String USER_ENDPOINT="User is signed out.Sign in first to get user details";
     String ADMIN_ENDPOINT="User is signed out";
