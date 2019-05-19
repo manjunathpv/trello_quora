@@ -27,12 +27,12 @@ public class CreateQuestionBusinessService {
     public QuestionEntity createQuestion(QuestionEntity questionEntity, final String authorizationToken) throws AuthorizationFailedException {
         UserAuthTokenEntity userAuthEntity = userDao.getUserByAccessToken(authorizationToken);
 
-        // Validate if user is signed in or not
+        // Validate if user is signed in or not checked with Access token
         if (userAuthEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
         }
 
-        // Validate if user has signed out
+        // Validate if user has signed out with the Access Token
         if (userAuthEntity.getLogoutAt() != null) {
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to post a question");
         }

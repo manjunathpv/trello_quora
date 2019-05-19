@@ -27,12 +27,12 @@ public class DeleteQuestionBusinessService {
     public void userQuestionDelete(final String questionId, final String authorization) throws InvalidQuestionException, AuthorizationFailedException {
         UserAuthTokenEntity userAuthEntity = userDao.getUserByAccessToken(authorization);
 
-        // Validate if user is signed in or not
+        // Validate if user is signed in or not checked with Access token
         if (userAuthEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
         }
 
-        // Validate if user has signed out
+        // Validate if user has signed out with the Access Token
         if (userAuthEntity.getLogoutAt() != null) {
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to delete a question");
         }
@@ -42,7 +42,6 @@ public class DeleteQuestionBusinessService {
             throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
         }
 
-        // Validate if current user is the owner of requested question or the role of user is not nonadmin
         if (!userAuthEntity.getUser().getUuid().equals(questionDao.getQuestionByQUuid(questionId).getUser().getUuid())) {
             if (userAuthEntity.getUser().getRole().equals("nonadmin")) {
                 throw new AuthorizationFailedException("ATHR-003", "Oly the question owner or admin can delete the question");

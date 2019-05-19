@@ -30,23 +30,23 @@ public class EditQuestionContentBusinessService {
     public QuestionEntity editQuestionContent(final QuestionEntity questionEntity, final String authorizationToken) throws AuthorizationFailedException, InvalidQuestionException {
         UserAuthTokenEntity userAuthEntity = userDao.getUserByAccessToken(authorizationToken);
 
-        // Validate if user is signed in or not
+        // Validate if user is signed in or not using access token
         if (userAuthEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
         }
 
-        // Validate if user has signed out
+        // Validate if user has signed out using access token
         if (userAuthEntity.getLogoutAt() != null) {
             throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to edit the question");
         }
 
-        // Validate if requested question exist or not
+        // Validate if requested question exist or not by question UUID
         QuestionEntity existingQuestionEntity = questionDao.getQuestionByQUuid(questionEntity.getUuid());
         if (existingQuestionEntity == null) {
             throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
         }
 
-        // Validate if current user is the owner of requested question
+        // Validate if current user is the owner of requested question after getting the user
         UserEntity currentUser = userAuthEntity.getUser();
         UserEntity questionOwner = questionDao.getQuestionByQUuid(questionEntity.getUuid()).getUser();
         if (currentUser.getId() != questionOwner.getId()) {
