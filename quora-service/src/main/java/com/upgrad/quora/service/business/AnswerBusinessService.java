@@ -30,7 +30,7 @@ public class AnswerBusinessService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity createAnswer(AnswerEntity answerEntity, final String questionId, final String authorizationToken) throws AuthorizationFailedException, InvalidQuestionException {
-        QuestionEntity questionEntity = questionDao.getQuestionByUuid(questionId);
+        QuestionEntity questionEntity = questionDao.getQuestionByQUuid(questionId);
         if (questionEntity == null) {
             throw new InvalidQuestionException("QUES-001", "The question entered is invalid");
         }
@@ -75,7 +75,7 @@ public class AnswerBusinessService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity deleteAnswer(final String answerId, final String authorizationToken) throws AuthorizationFailedException, AnswerNotFoundException {
-        UserAuthTokenEntity userAuthTokenEntity = userDao.getUserAuthToken(authorizationToken);
+        UserAuthTokenEntity userAuthTokenEntity = userDao.getUserByAccessToken(authorizationToken);
         if (userAuthTokenEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
         }
@@ -99,7 +99,7 @@ public class AnswerBusinessService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public List<AnswerEntity> getAllAnswersToQuestion(final String questionId, final String authorizationToken) throws AuthorizationFailedException, InvalidQuestionException {
-        QuestionEntity questionEntity = questionDao.getQuestionByUuid(questionId);
+        QuestionEntity questionEntity = questionDao.getQuestionByQUuid(questionId);
         if (questionEntity == null) {
             throw new InvalidQuestionException("QUES-001", "The question with entered uuid whose details are to be seen does not exist");
         }
